@@ -31,8 +31,21 @@ jobs:
 
       - name: Prepare site
         run: |
-          mkdir _site
-          cp -r src/EdemGo/* _site/
+          test -f src/EdemGo/index.html
+          mkdir -p _site
+          cp -a src/EdemGo/. _site/
+          touch _site/.nojekyll
+
+          source_files=$(find src/EdemGo -type f | wc -l)
+          published_files=$(find _site -type f ! -name .nojekyll | wc -l)
+          test "$source_files" -eq "$published_files"
+
+          test -f _site/routes/moscow-sochi.html
+          test -f _site/cities/sochi.html
+          test -f _site/travel/sochi.html
+          test -f _site/blog/kak-kupit-zhd-bilet.html
+          test -f _site/css/style.css
+          test -f _site/js/main.js
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
